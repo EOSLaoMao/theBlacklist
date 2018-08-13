@@ -21,60 +21,52 @@ class theblacklist_contract : public eosio::contract {
     eosio::print(" | order:", order_name);
     require_auth(owner);
     eosio::print(" | auth granted!");
+    static const account_name code_account = N(producerjson);
 
-    // Check producer info table. Owner should exist (has called regproducer) and be activated.
-    /*
-    typedef eosio::multi_index<N(producers), eosiosystem::producer_info> producer_info_t;
-    producer_info_t _producers(N(eosio), N(eosio));
-    //eosio::print("prods:", _producers);
-    auto prod = _producers.get(owner,    "user is not a producer");
-    eosio_assert(prod.is_active == true, "user is not an active producer");
-    eosio_assert(prod.total_votes > 0.0, "user is not an active producer");
-    */
-
-    // Quick check to remind the user the payload must be json.
-    // eosio_assert(json[0] == '{',             "payload must be json");
-    // eosio_assert(json[json.size()-1] == '}', "payload must be json");
-
-    // If entry exists, update it.
-    auto target_itr = theblacklist.find(owner);
-    if (target_itr != theblacklist.end()) {
-      theblacklist.modify(target_itr, owner, [&](auto& j) {
-        j.owner = owner;
-        j.action = action;
-        j.accounts = accounts;
-        j.order_name = order_name;
-      });
-    } else {  // Otherwise, create a new entry for them.
-      theblacklist.emplace(owner, [&](auto& j) {
-        j.owner = owner;
-        j.action = action;
-        j.accounts = accounts;
-        j.order_name = order_name;
-      });
+    theblacklist_table existing(code_account, owner);
+    int i = 0;
+    auto itr = existing.begin();
+    while (itr != existing.end()) {
+        i++;
+        itr++;
     }
+    eosio::print(" | ii:", i);
+    existing.emplace(owner, [&](auto& j) {
+      j.id = existing.available_primary_key();
+      j.owner = owner;
+      j.action = action;
+      j.accounts = accounts;
+      j.order_name = order_name;
+    });
   }
 
 
   // Allows a producer to delete their entry.
   void del(const account_name owner) {
     require_auth(owner);
-    auto target_itr = theblacklist.find(owner);
-    theblacklist.erase(target_itr);
+    static const account_name code_account = N(producerjson);
+    theblacklist_table existing(code_account, owner);
+    while (existing.begin() != existing.end()) {
+        auto itr = existing.end();
+        itr--;
+        existing.erase(itr);
+        theblacklist_table existing(code_account, owner);
+    }
   }
 
 
  private:
   // @abi table theblacklist i64
   struct theblacklist {
+    uint64_t                    id;
     account_name                owner;
     std::vector<account_name>   accounts;
     string                      order_name; // in ECAF Order 001, order_name should be string '2018-06-19-AO-001'.
     // checksum256                 order_tx; // transaction id contained ECAF Order signed by account ecafofficial.
     string                      action; // action is a choice field, valid choices are 'add' and 'remove', meaning add or remove accounts from blacklist. Default is 'add'.
 
-    auto primary_key() const {  return owner;  }
-    EOSLIB_SERIALIZE(theblacklist, (owner)(accounts)(order_name)(action))
+    auto primary_key() const {  return id;  }
+    EOSLIB_SERIALIZE(theblacklist, (id)(owner)(accounts)(order_name)(action))
   };
   typedef eosio::multi_index<N(theblacklist), theblacklist> theblacklist_table;
   theblacklist_table theblacklist;
