@@ -15,7 +15,6 @@ class theblacklist_contract : public eosio::contract {
 
 
   // A simple store for a producer's json.
-  // void set(const account_name owner, const checksum256 &order_tx, const string order_id, const string action, const std::vector<account_name>& accounts) {
   void set(const account_name owner, const std::vector<account_name>& accounts, const string order) {
     eosio::print(" | set action called");
     eosio::print(" | owner:", owner);
@@ -69,9 +68,9 @@ class theblacklist_contract : public eosio::contract {
   // @abi table theblacklist i64
   struct theblacklist {
     account_name                owner;
-    // checksum256                 order_tx; // transaction id contained ECAF Order signed by account ecafofficial.
     std::vector<account_name>   accounts;
     string                      order; // in ECAF Order 001, order_id should be string '001'.
+    // checksum256                 order_tx; // transaction id contained ECAF Order signed by account ecafofficial.
     // string                      action; // action is a choice field, valid choices are 'add' and 'remove', meaning add or remove accounts from blacklist. Default is 'add'.
 
     auto primary_key() const {  return owner;  }
