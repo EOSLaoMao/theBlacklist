@@ -15,10 +15,10 @@ class theblacklist_contract : public eosio::contract {
 
 
   // A simple store for a producer's json.
-  void set(const account_name owner, const std::vector<account_name>& accounts, const string order) {
+  void set(const account_name owner, const std::vector<account_name>& accounts, const string order_name, const string action) {
     eosio::print(" | set action called");
     eosio::print(" | owner:", owner);
-    eosio::print(" | order:", order);
+    eosio::print(" | order:", order_name);
     require_auth(owner);
     eosio::print(" | auth granted!");
 
@@ -41,16 +41,16 @@ class theblacklist_contract : public eosio::contract {
     if (target_itr != theblacklist.end()) {
       theblacklist.modify(target_itr, owner, [&](auto& j) {
         j.owner = owner;
-        //j.action = action;
+        j.action = action;
         j.accounts = accounts;
-        j.order = order;
+        j.order_name = order_name;
       });
     } else {  // Otherwise, create a new entry for them.
       theblacklist.emplace(owner, [&](auto& j) {
         j.owner = owner;
-        //j.action = action;
+        j.action = action;
         j.accounts = accounts;
-        j.order = order;
+        j.order_name = order_name;
       });
     }
   }
@@ -69,12 +69,12 @@ class theblacklist_contract : public eosio::contract {
   struct theblacklist {
     account_name                owner;
     std::vector<account_name>   accounts;
-    string                      order; // in ECAF Order 001, order_id should be string '001'.
+    string                      order_name; // in ECAF Order 001, order_name should be string '2018-06-19-AO-001'.
     // checksum256                 order_tx; // transaction id contained ECAF Order signed by account ecafofficial.
-    // string                      action; // action is a choice field, valid choices are 'add' and 'remove', meaning add or remove accounts from blacklist. Default is 'add'.
+    string                      action; // action is a choice field, valid choices are 'add' and 'remove', meaning add or remove accounts from blacklist. Default is 'add'.
 
     auto primary_key() const {  return owner;  }
-    EOSLIB_SERIALIZE(theblacklist, (owner)(accounts)(order))
+    EOSLIB_SERIALIZE(theblacklist, (owner)(accounts)(order_name)(action))
   };
   typedef eosio::multi_index<N(theblacklist), theblacklist> theblacklist_table;
   theblacklist_table theblacklist;
