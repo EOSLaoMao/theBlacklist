@@ -7,6 +7,9 @@
 using eosio::asset;
 using std::string;
 
+static const account_name ecaf_account = N(ecafofficial);
+static const account_name code_account = N(theblacklist);
+
 class theblacklist_contract : public eosio::contract {
  public:
   theblacklist_contract(account_name self) :
@@ -14,19 +17,10 @@ class theblacklist_contract : public eosio::contract {
     theblacklist(_self, _self) {}
 
 
-  // add or remove blacklisted accounts.
+  // set blacklisted accounts. currently only support actor-blacklist
   void set(const std::vector<account_name>& accounts, const string order_name, const string action) {
-    static const account_name ecaf_account = N(ecafofficial);
     require_auth(ecaf_account);
-    static const account_name code_account = N(theblacklist);
     theblacklist_table existing(code_account, code_account);
-    int i = 0;
-    auto itr = existing.begin();
-    while (itr != existing.end()) {
-        i++;
-        itr++;
-    }
-    eosio::print(" | ii:", i);
     existing.emplace(code_account, [&](auto& j) {
       j.id = existing.available_primary_key();
       j.action = action;
@@ -37,9 +31,7 @@ class theblacklist_contract : public eosio::contract {
 
   // Delete all blacklist entries.
   void del() {
-    static const account_name ecaf_account = N(ecafofficial);
     require_auth(ecaf_account);
-    static const account_name code_account = N(theblacklist);
     theblacklist_table existing(code_account, code_account);
     while (existing.begin() != existing.end()) {
         auto itr = existing.end();
