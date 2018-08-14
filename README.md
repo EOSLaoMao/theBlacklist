@@ -1,6 +1,6 @@
 #  `theblacklist` Smart Contract
 
-Blacklist smart contract for EOS(or ECAF? :)).
+Blacklist smart contract for EOS(or ECAF? :).
 
 
 # Design
@@ -17,7 +17,7 @@ Blacklist smart contract for EOS(or ECAF? :)).
 ### table scheme of `theblacklist`
 
 ```
-id				uint64;
+id			uint64;
 order_name		string;
 order_url 		string;
 order_hash 		string;
@@ -27,13 +27,13 @@ accounts		name[];
 
 ```
 
-1.`id` is a auto incremental field as primary key.
+1.`id` is an auto incremental field as primary key.
 
-2.`order_name` used to store ECAF order name, eg. for ECAF Order 001, `order_name` would be `ECAF_Arbitrator_Order_2018-06-19-AO-001`
+2.`order_name` is used to store ECAF order name, eg. for ECAF Order 001, `order_name` would be `ECAF_Arbitrator_Order_2018-06-19-AO-001`
 
-3.`order_url` used to store ECAF order pdf link, eg. for ECAF Order 001, `order_url` would be `https://eoscorearbitration.io/wp-content/uploads/2018/07/ECAF_Arbitrator_Order_2018-06-19-AO-001.pdf`
+3.`order_url` is used to store ECAF order pdf link, eg. for ECAF Order 001, `order_url` would be `https://eoscorearbitration.io/wp-content/uploads/2018/07/ECAF_Arbitrator_Order_2018-06-19-AO-001.pdf`
 
-4.`order_hash` used to store SHA3-256 of order pdf file, eg. for ECAF Order 001, `order_hash` would be `a80df3e8cfa895a02161dc4d5d04392e3274bce917935c6c214cfe0f1f7e868a`
+4.`order_hash` is used to store SHA3-256 of order pdf file, eg. for ECAF Order 001, `order_hash` would be `a80df3e8cfa895a02161dc4d5d04392e3274bce917935c6c214cfe0f1f7e868a`
 
 5.`type` is a choice field used for different types of black/white list, choices are:
 
@@ -48,7 +48,7 @@ key-blacklist
 
 6.`action` is a choice field, valid choices are `add` and `remove`, meaning add or remove accounts from certain types of black/white list. 
 
-Currently, all the orders came from ECAF only requested to `add` certain accounts to `actor-blacklist`, but as some disputes will be resolved in the future, it is possible that ECAF will issue Order to release certain accounts from `actor-blacklist`. By then, ECAF can set an new entry with `action` field value `remove` to release account.
+Currently, all the orders came from ECAF only requested to `add` certain accounts to `actor-blacklist`, but as some disputes resolved in the future, it is possible that ECAF will issue orders to release certain accounts from `actor-blacklist`. By then, ECAF can set a new entry with `action` field value `remove` to release accounts.
 
 7.`accounts` is an array of account, coming from ECAF order.
 
@@ -63,7 +63,7 @@ Currently, all the orders came from ECAF only requested to `add` certain account
 to set an ECAF order, simply call `set` action with `ecafofficial` auth:
 
 ```
-cleos push action theblacklist set '{"accounts": [], "order_name": "", "action": "add/remove", "type": "", "order_url": "", "order_hash": ""}' -p ecafofficial
+cleos push action theblacklist set '{"accounts": [], "order_name": "", "action": "add/remove", "type": "", "order_url": "", "order_hash": ""}' -p ecafofficial@active
 ```
 
 for example, for ECAF order 003(https://eoscorearbitration.io/wp-content/uploads/2018/07/ECAF-Temporary-Freeze-Order-2018-07-13-AO-003.pdf), just call:
@@ -165,7 +165,7 @@ actor-blacklist = craigspys211
 actor-blacklist = eosfomoplay1
 ```
 
-you can easily compare this config with yours, expecially if your are a BP :)
+you can easily compare this config with yours, expecially when your are a BP :)
 
 
 ### Clear table(DEBUG only)
@@ -184,7 +184,7 @@ also, all ECAF orders are set in `theblacklist` table.
 check it out:
 
 ```
-cleos -u https://api.eoslaomao.com get table the blacklist theblacklist theblacklist
+cleos -u https://api.eoslaomao.com get table theblacklist theblacklist theblacklist
 ```
 
 # ECAF, feel free to use it!
@@ -201,8 +201,7 @@ lets push onchain governance one more step forward!
 # How to deploy
 
 ```
-cleos set contract theblacklist theblacklist -p theblacklist@active
+cleos set contract theblacklist theblacklist/ -p theblacklist@active
 ```
 
 built with Love by EOSLaoMao Team.
-
