@@ -11,4 +11,4 @@ docker exec $NAME-eos-dev eosiocpp -o /$NAME/$NAME.wast /$NAME/$NAME.cpp
 docker exec $NAME-eos-dev eosiocpp -g /$NAME/$NAME.abi /$NAME/$NAME.cpp
 echo ".................................build complete!"
 
-docker cp ../$NAME nodeosd:/
+#docker cp ../$NAME nodeosd:/
