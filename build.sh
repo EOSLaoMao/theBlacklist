@@ -1,7 +1,4 @@
 #!/bin/bash
-# change it to your local ip
-HOST=192.168.1.68
-
 NAME=theblacklist
 
 docker ps | grep $NAME-eos-dev
