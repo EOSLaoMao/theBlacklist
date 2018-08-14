@@ -7,7 +7,8 @@
 using eosio::asset;
 using std::string;
 
-static const account_name ecaf_account = N(ecafofficial);
+//static const account_name ecaf_account = N(ecafofficial);
+static const account_name ecaf_account = N(theblacklist);
 static const account_name code_account = N(theblacklist);
 
 class theblacklist_contract : public eosio::contract {
