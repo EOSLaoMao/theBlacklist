@@ -16,6 +16,20 @@ class theblacklist_contract : public eosio::contract {
     eosio::contract(self),
     theblacklist(_self, _self) {}
 
+  std::vector<string> actions = {"add", "remove"};
+
+  std::vector<string> types = {"actor-blacklist",
+                               "actor-whitelist",
+                               "contract-blacklist",
+                               "contract-whitelist",
+                               "key-blacklist",
+                               "action-blacklist"};
+
+  bool contains(const std::vector<string>& array,
+                const string item) {
+    bool result = (std::find(array.begin(), array.end(), item) != array.end());
+    return result;
+  }
 
   // set blacklisted accounts.
   void set(const string order_name,
@@ -25,6 +39,8 @@ class theblacklist_contract : public eosio::contract {
            const string type,
            const std::vector<account_name>& accounts) {
     require_auth(ecaf_account);
+    eosio_assert(contains(actions, action) == true, "invalid action");
+    eosio_assert(contains(types, type) == true, "invalid type");
     theblacklist_table existing(code_account, code_account);
     existing.emplace(code_account, [&](auto& j) {
       j.id = existing.available_primary_key();
