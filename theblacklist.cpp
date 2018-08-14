@@ -17,20 +17,28 @@ class theblacklist_contract : public eosio::contract {
     theblacklist(_self, _self) {}
 
 
-  // set blacklisted accounts. currently only support actor-blacklist
-  void set(const std::vector<account_name>& accounts, const string order_name, const string action) {
+  // set blacklisted accounts.
+  void set(const string order_name,
+           const string order_url,
+           const string order_hash,
+           const string action,
+           const string type,
+           const std::vector<account_name>& accounts) {
     require_auth(ecaf_account);
     theblacklist_table existing(code_account, code_account);
     existing.emplace(code_account, [&](auto& j) {
       j.id = existing.available_primary_key();
-      j.action = action;
-      j.accounts = accounts;
       j.order_name = order_name;
+      j.order_url = order_url;
+      j.order_hash = order_hash;
+      j.action = action;
+      j.type = type;
+      j.accounts = accounts;
     });
   }
 
-  // Delete all blacklist entries.
-  void del() {
+  // for DEBUG only, should be removed when deployed online: Delete all blacklist entries.
+  void clear() {
     require_auth(ecaf_account);
     theblacklist_table existing(code_account, code_account);
     while (existing.begin() != existing.end()) {
@@ -45,16 +53,19 @@ class theblacklist_contract : public eosio::contract {
   // @abi table theblacklist i64
   struct theblacklist {
     uint64_t                    id;
-    std::vector<account_name>   accounts;
-    string                      order_name; // in ECAF Order 001, order_name should be string '2018-06-19-AO-001'.
+    string                      order_name; // order name, eg. for ECAF Order 001, order_name should be 'ECAF_Arbitrator_Order_2018-06-19-AO-001'.
+    string                      order_url; // order pdf link, eg. for ECAF Order 001, order_url should be 'https://eoscorearbitration.io/wp-content/uploads/2018/07/ECAF_Arbitrator_Order_2018-06-19-AO-001.pdf'.
+    string                      order_hash; // SHA3-256 hash, eg. for ECAF Order 001, order_hash should be 'a80df3e8cfa895a02161dc4d5d04392e3274bce917935c6c214cfe0f1f7e868a'.
     // checksum256                 order_tx; // transaction id contained ECAF Order signed by account ecafofficial.
-    string                      action; // action is a choice field, valid choices are 'add' and 'remove', meaning add or remove accounts from blacklist. Default is 'add'.
+    string                      action; // action is a choice field, valid choices are 'add' and 'remove', meaning add or remove accounts for certain type.
+    string                      type; // type is a choice field, valid choices are: 'actor-blacklist', 'actor-whitelist', 'contract-blacklist', 'contract-whitelist', 'action-blacklist', 'key-blacklist'.
+    std::vector<account_name>   accounts;
 
     auto primary_key() const {  return id;  }
-    EOSLIB_SERIALIZE(theblacklist, (id)(accounts)(order_name)(action))
+    EOSLIB_SERIALIZE(theblacklist, (id)(order_name)(order_url)(order_hash)(action)(type)(accounts))
   };
   typedef eosio::multi_index<N(theblacklist), theblacklist> theblacklist_table;
   theblacklist_table theblacklist;
 };
 
-EOSIO_ABI(theblacklist_contract, (set)(del))
+EOSIO_ABI(theblacklist_contract, (set)(clear))
