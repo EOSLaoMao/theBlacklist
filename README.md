@@ -167,6 +167,12 @@ actor-blacklist = eosfomoplay1
 
 you can easily compare this config with yours, expecially when your are a BP :)
 
+you can also specify other API endpoints as the first param:
+
+```
+./fetch.sh https://api1.eosasia.one
+```
+
 
 ### Clear table(DEBUG only)
 
