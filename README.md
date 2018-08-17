@@ -2,6 +2,7 @@
 
 Blacklist smart contract for EOS Community.
 
+This contracted is designed to be used both for ECAF and for active Block Producers on EOS.
 
 # Design
 
