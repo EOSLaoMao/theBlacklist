@@ -1,20 +1,27 @@
 #  `theblacklist` Smart Contract
 
-Blacklist smart contract for EOS(or ECAF? :).
+Blacklist smart contract for EOS Community.
 
 
 # Design
 
+`theblacklist` contract has two tables: 
 
-`theblacklist` contract has one action only: 
+1.`theblacklist` table, used to store ECAF blacklist orders.
 
-`set` to add order entries containing blacklist accounts to table `theblacklist`.
+2.`producerhash` table, used to store active producers blacklist hash.
 
-`ecafofficial` account is hardcoded to only let `ecafofficial` call `set` action.
+AND three actions: 
 
+1.`setorder` for `ecafofficial` account to add order entries containing blacklist accounts to table `theblacklist`.
 
+2.`sethash` for active BPs to add their blacklist sha-256 hash to table `producerhash`
 
-### table scheme of `theblacklist`
+3.`delhash` for BPs to remove their hash entry from table `producerhash`
+
+## table scheme
+
+### table `theblacklist`
 
 ```
 id			uint64;
@@ -24,7 +31,6 @@ order_hash 		string;
 action			string;
 type			string;
 accounts		name[];
-
 ```
 
 1.`id` is an auto incremental field as primary key.
@@ -52,29 +58,76 @@ Currently, all the orders came from ECAF only requested to `add` certain account
 
 7.`accounts` is an array of account, coming from ECAF order.
 
+### table `producerhash`
+
+```
+id			uint64;
+producer      name;
+hash      sha235sum;
+```
+
+1.`id` is an auto incremental field as primary key.
+
+2.`producer` to store BP account name.
+
+3.`hash` to store sha-256 sum of BP's blacklist config.
 
 
 # Usage
 
 
-### Set ECAF order `theblacklist` table
+### 1. Set ECAF order to `theblacklist` table
 
 
-to set an ECAF order, simply call `set` action with `ecafofficial` auth:
+to set an ECAF order, simply call `setorder` action with `ecafofficial` auth:
 
 ```
-cleos push action theblacklist set '{"accounts": [], "order_name": "", "action": "add/remove", "type": "", "order_url": "", "order_hash": ""}' -p ecafofficial@active
+cleos push action theblacklist setorder '{"accounts": [], "order_name": "", "action": "add/remove", "type": "", "order_url": "", "order_hash": ""}' -p ecafofficial@active
 ```
 
 for example, for ECAF order 003(https://eoscorearbitration.io/wp-content/uploads/2018/07/ECAF-Temporary-Freeze-Order-2018-07-13-AO-003.pdf), just call:
 
 ```
-cleos push action theblacklist set '{"accounts": ["neverlandwal", "tseol5n52kmo", "potus1111111"], "order_name": "ECAF-Temporary-Freeze-Order-2018-07-13-AO-003", "action": "add", "type": "actor-blacklist", "order_url": "https://eoscorearbitration.io/wp-content/uploads/2018/07/ECAF-Temporary-Freeze-Order-2018-07-13-AO-003.pdf", "order_hash": "ca104c57af040b5b46ab6fb2bcb8455ed8f81402e5e586d8a50a47cfc2683a20"}' -p ecafofficial@active
+cleos push action theblacklist setorder '{"accounts": ["neverlandwal", "tseol5n52kmo", "potus1111111"], "order_name": "ECAF-Temporary-Freeze-Order-2018-07-13-AO-003", "action": "add", "type": "actor-blacklist", "order_url": "https://eoscorearbitration.io/wp-content/uploads/2018/07/ECAF-Temporary-Freeze-Order-2018-07-13-AO-003.pdf", "order_hash": "ca104c57af040b5b46ab6fb2bcb8455ed8f81402e5e586d8a50a47cfc2683a20"}' -p ecafofficial@active
 ```
 
 NOTE: There is a script `insert_ecaf_orders.sh` which contains all ECAF orders.
 
-### Fetch data from contract
+### 2. Add/update BP's blacklist hash to `producerhash`
+
+as a BP, everytime you update your blacklist config, you should add/update the blacklist hash to `producerjson` table
+
+This repo comes with a bash script to easily generate blacklist hash `generate_blacklist_hash.sh`, just run it with your config file path:
+
+```
+./generate_blacklist_hash.sh /path/to/nodeos/config.ini
+
+The sha256sum of your blacklist config is:
+
+55ed0834aecb56c86a716064ecda2412de42f4a43df1dbff41d441d47725e1aa
+
+You can publish your hash to theblacklist contract as follows(add your BP name before you submit):
+cleos -u https://api.eoslaomao.com push action theblacklist sethash '{"producer": "", "hash": "55ed0834aecb56c86a716064ecda2412de42f4a43df1dbff41d441d47725e1aa"}'
+
+```
+
+then, you can submit your hash to `producerhash` table using `sethash` action:
+
+```
+cleos push action theblacklist sethash '{"producer": "BP_ACCOUNT", "hash": "55ed0834aecb56c86a716064ecda2412de42f4a43df1dbff41d441d47725e1aa"}' -p BP_ACCOUNT@active
+```
+
+### 3. Delete BP's blacklist hash entry
+
+just call `delhash` action to delete your blacklist hash entry from `producerhash` json.
+
+```
+cleos push action the blacklist delhash '{"pruducer": "BP_ACCOUNT"}' -p BP_ACCOUNT@active
+```
+
+## Fetch data from contract
+
+### 1. Fetch blacklist data
 
 #### READ it from table `theblacklist` as json
 
@@ -173,8 +226,30 @@ you can also specify other API endpoints as the first param:
 ./fetch.sh https://api1.eosasia.one
 ```
 
+### 2. Fetch producer hash data
 
-### Clear table(DEBUG only)
+#### Fetch producer hash data from table:
+
+```
+cleos get table theblacklist theblacklist producerhash
+
+{
+  "rows": [{
+      "id": 0,
+      "producer": "eoslaomaocom",
+      "hash": "55ed0834aecb56c86a716064ecda2412de42f4a43df1dbff41d441d47725e1aa"
+      },
+      ......
+      ]
+}
+
+```
+
+#### TODO: compare hash data in `producerhash` table
+
+will provide a bash script to do easy compare and summary of hashes.
+
+### Clear `theblacklist` table(DEBUG only)
 
 `clear` action should be used for debug only, in production(or mainnet) `clear` action should be disabled.
 
