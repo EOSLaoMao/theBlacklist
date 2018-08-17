@@ -62,9 +62,9 @@ Currently, all the orders came from ECAF only requested to `add` certain account
 ### table `producerhash`
 
 ```
-id			uint64;
-producer      name;
-hash      checksum256;
+id				uint64;
+producer				name;
+hash				checksum256;
 ```
 
 1.`id` is an auto incremental field as primary key.
