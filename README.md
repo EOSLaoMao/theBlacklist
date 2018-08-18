@@ -123,7 +123,7 @@ cleos push action theblacklist sethash '{"producer": "BP_ACCOUNT", "hash": "55ed
 just call `delhash` action to delete your blacklist hash entry from `producerhash` json.
 
 ```
-cleos push action the blacklist delhash '{"pruducer": "BP_ACCOUNT"}' -p BP_ACCOUNT@active
+cleos push action the blacklist delhash '{"producer": "BP_ACCOUNT"}' -p BP_ACCOUNT@active
 ```
 
 ## Fetch data from contract
