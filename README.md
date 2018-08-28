@@ -247,7 +247,7 @@ cleos get table theblacklist theblacklist producerhash
 ```
 ### 3. Check blacklist
 ```
-./check_blacklist.sh [api] [config.ini]
+curl -sL https://raw.githubusercontent.com/EOSLaoMao/theblacklist/master/check_blacklist.sh | bash -s [api] [config.ini]
 ```
 
 #### TODO: compare hash data in `producerhash` table
