@@ -224,7 +224,7 @@ you can easily compare this config with yours, expecially when your are a BP :)
 you can also specify other API endpoints as the first param:
 
 ```
-./fetch.sh https://api1.eosasia.one
+curl -sL https://raw.githubusercontent.com/EOSLaoMao/theblacklist/master/fetch.sh | bash -s https://api1.eosasia.one
 ```
 
 ### 2. Fetch producer hash data
