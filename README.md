@@ -245,6 +245,10 @@ cleos get table theblacklist theblacklist producerhash
 }
 
 ```
+### 3. Check blacklist
+```
+./check_blacklist.sh [api] [config.ini]
+```
 
 #### TODO: compare hash data in `producerhash` table
 
