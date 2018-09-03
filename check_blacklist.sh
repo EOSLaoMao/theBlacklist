@@ -27,8 +27,10 @@ check_diff() {
     diff <(echo "${chain_actor_list}") <(echo "${local_actor_list}")| sed 's/</chain -/g' | sed 's/>/local -/g' | egrep 'chain -|local -'
 }
 
+# check local and theblacklist actor-blacklist hash
 check_hash() {
     local_hash=`cat ${config} | grep actor-black | grep -v "#" | sort | tr -d " " | sha256sum`
+    # get hash from table theblacklist
     chain_hash=`echo "${chain_actor_list}" | sed 's/^/actor-blacklist = /g' | tr -d " " | sha256sum`
     if [ "${local_hash}" == "${chain_hash}" ];then
         echo "success: ${chain_hash}"
