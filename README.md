@@ -4,6 +4,10 @@ Blacklist smart contract for EOS Community.
 
 This contract is designed to be used both for ECAF and for active Block Producers on EOS.
 
+We have deployed this contract using `theblacklist` account on Mainnet: https://bloks.io/account/theblacklist
+
+And bloks.io built a nice frontend of it: https://bloks.io/blacklist, special thanks to HKEOS and EOSCAFE :)
+
 # Design
 
 `theblacklist` contract has two tables: 
@@ -162,7 +166,7 @@ cleos get table theblacklist theblacklist theblacklist
 
 #### READ it as nodeos config :)
 
-just run `fetch.sh`, which will using `curl` to call an api endpoint(currently, hardcoded `https://api-kylin.eoslaomao.com` as `theblacklist` already deployed on Kylin Testnet), you will get a well documented nodeos config:
+just run `fetch.sh`, which will using `curl` to call an api endpoint, you will get a well documented nodeos config:
 
 ```
 # from order: ECAF_Arbitrator_Order_2018-06-19-AO-001
@@ -263,9 +267,11 @@ cleos push action producerjson clear '' -p ecafofficial@active
 ```
 
 # Current status
-as a demo, we have deployed the contract using `theblacklist` account on Kylin Testnet: https://tools.cryptokylin.io/#/tx/theblacklist
+We have deployed this contract using `theblacklist` account on Mainnet: https://bloks.io/account/theblacklist
 
-also, all ECAF orders are set in `theblacklist` table.
+And bloks.io team built a nice frontend of it: https://bloks.io/blacklist, special thanks to HKEOS and EOSCAFE :)
+
+Also, all ECAF orders are set in `theblacklist` table.
 
 check it out:
 
@@ -273,8 +279,7 @@ check it out:
 cleos -u https://api.eoslaomao.com get table theblacklist theblacklist theblacklist
 ```
 
-# ECAF, feel free to use it!
-lets push onchain governance one more step forward!
+Lets push onchain governance one more step forward!
 
 
 ---

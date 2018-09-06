@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ];then
-  API=https://api-kylin.eoslaomao.com/v1/chain/get_table_rows
+  API=https://api.eoslaomao.com/v1/chain/get_table_rows
 else
   API=$1/v1/chain/get_table_rows
 fi
