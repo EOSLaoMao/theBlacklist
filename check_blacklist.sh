@@ -8,7 +8,7 @@ config=${default_config}
 init() {
     [ "$1" != "" ] && api=$1
     [ "$2" != "" ] && config=$2
-    [ ! -f ${config} ] && "please check config path(${config})" && exit 1
+    [ ! -f ${config} ] && echo "please check config path(${config})" && exit 1
 }
 
 get_chain_actor_list() {
@@ -20,7 +20,7 @@ get_chain_actor_list() {
 }
 
 get_local_actor_list() {
-    local_actor_list=`cat config.ini | grep actor-black | grep -v "#" |egrep -o '\w+$'| sort`
+    local_actor_list=`cat ${config} | grep actor-black | grep -v "#" |egrep -o '\w+$'| sort`
 }
 
 check_diff() {
