@@ -4,9 +4,10 @@ echo
 if [ -z "$1" ];then
   echo ERROR:""
   echo "Please specify your config path: ./generate_blacklist_hash.sh PATH_TO_CONFIG"
-  exit
+  exit 1
 else
   CONFIG=$1
+  [ ! -f ${CONFIG} ] && echo "please check config path(${CONFIG})" && exit 1
 fi
 
 UNAME=`uname`
