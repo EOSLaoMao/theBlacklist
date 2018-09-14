@@ -37,9 +37,9 @@ check_diff() {
 
 # check local and theblacklist actor-blacklist hash
 check_hash() {
-    local_hash=`cat ${config} | grep actor-black | grep -v "#" | sort | uniq | tr -d " " | ${checker}`
+    local_hash=`cat ${config} | grep actor-black | grep -v "#" | sort | uniq | sed 's/[^a-zA-Z0-9=-]//g' | tr -d '\r' | ${checker}`
     # get hash from table theblacklist
-    chain_hash=`echo "${chain_actor_list}" | sed 's/^/actor-blacklist = /g' | tr -d " " | ${checker}`
+    chain_hash=`echo "${chain_actor_list}" | sed 's/^/actor-blacklist = /g' | sed 's/[^a-zA-Z0-9=-]//g' | tr -d '\r' | ${checker}`
     if [ "${local_hash}" == "${chain_hash}" ];then
         echo "success: ${chain_hash}"
     else

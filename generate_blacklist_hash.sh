@@ -4,17 +4,18 @@ echo
 if [ -z "$1" ];then
   echo ERROR:""
   echo "Please specify your config path: ./generate_blacklist_hash.sh PATH_TO_CONFIG"
-  exit
+  exit 1
 else
   CONFIG=$1
+  [ ! -f ${CONFIG} ] && echo "please check config path(${CONFIG})" && exit 1
 fi
 
 UNAME=`uname`
 
 if [[ $UNAME == 'Darwin' ]]; then
-  md5=`cat $CONFIG | grep actor-black | grep -v "#" | sort | uniq | tr -d " " | shasum -a 256 | awk '{print $1}'`
+  md5=`cat $CONFIG | grep actor-black | grep -v "#" | sort | uniq | sed 's/[^a-zA-Z0-9=-]//g' | tr -d '\r' | shasum -a 256 | awk '{print $1}'`
 else
-  md5=`cat $CONFIG | grep actor-black | grep -v "#" | sort | uniq | tr -d " " | sha256sum | awk '{print $1}'`
+  md5=`cat $CONFIG | grep actor-black | grep -v "#" | sort | uniq | sed 's/[^a-zA-Z0-9=-]//g' | tr -d '\r' | sha256sum | awk '{print $1}'`
 fi
 echo "The sha256sum of your blacklist config is:"
 echo $md5
