@@ -249,15 +249,13 @@ cleos get table theblacklist theblacklist producerhash
 }
 
 ```
-### 3. Check blacklist(BUG to fix)
+### 3. Check blacklist
 
-<!--- 
 CURRENTLY there is a bug in this script
 
 ```
 curl -sL https://raw.githubusercontent.com/EOSLaoMao/theblacklist/master/check_blacklist.sh | bash -s [api] [config.ini]
 ```
- -->
 
 #### TODO: compare hash data in `producerhash` table
 
