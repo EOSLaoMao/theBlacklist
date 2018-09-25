@@ -57,9 +57,9 @@ check_hash() {
 check_producerhash() {
     producer_hash=`curl -s ${url} POST -d '{"scope":"theblacklist", "code":"theblacklist", "table":"producerhash", "json": true, "limit": 600}' | jq -r --arg BP "${bp}" '.rows[]|select(.producer == $BP)|.hash'`
     if [ "${producer_hash}  -" == "${chain_hash}" ];then
-        echo "producer_hash success: ${chain_hash}"
+        echo "${bp} producer_hash success: ${chain_hash}"
     else
-        echo "producer hash: ${producer_hash}"
+        echo "${bp} producer hash: ${producer_hash}"
         echo "chain: ${chain_hash}"
     fi
 }
