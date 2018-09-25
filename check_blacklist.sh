@@ -28,7 +28,7 @@ _help() {
 
 get_chain_actor_list() {
     url="${api}/v1/chain/get_table_rows"
-   chain_actor_list=`curl -s ${url} -X POST -d '{"scope":"theblacklist", "code":"theblacklist", "table":"theblacklist", "json": true, "limit": 100 \
+    chain_actor_list=`curl -s ${url} -X POST -d '{"scope":"theblacklist", "code":"theblacklist", "table":"theblacklist", "json": true, "limit": 100 \
  }' | python  -c "import sys, json; rows = json.load(sys.stdin)['rows'];result = ''; configs = []; [configs.extend([('# %s = %s' % (r['type'], a) if r['action'] != 'add' else '%s = %s' % (r['type'], a)) for a in r['accounts']])for r in rows]; dups = [configs[j] for i in range(len(configs)) for j in range(i+1, len(configs)) if('# ' + configs[i] == configs[j])]; actors=[]; l = [(a if (r['action'] != 'remove' and '# %s = %s' % (r['type'], a) not in dups) else '' for a in r['accounts']) for r in rows]; [actors.extend(list(l)) for l in l]; actors = list(set([a for a in actors if len(a)])); actors.sort(); print '\n'.join(actors)"`
     [ "${chain_actor_list}" == "" ] && echo "please check api(${api})." && exit 1
 }
