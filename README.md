@@ -249,7 +249,7 @@ cleos get table theblacklist theblacklist producerhash
 }
 
 ```
-### 3. Check blacklist(but to fix)
+### 3. Check blacklist(BUG to fix)
 
 <!--- 
 CURRENTLY there is a bug in this script
