@@ -254,7 +254,7 @@ cleos get table theblacklist theblacklist producerhash
 CURRENTLY there is a bug in this script
 
 ```
-curl -sL https://raw.githubusercontent.com/EOSLaoMao/theblacklist/master/check_blacklist.sh | bash -s [api] [config.ini]
+curl -sL https://raw.githubusercontent.com/EOSLaoMao/theblacklist/master/check_blacklist.sh | bash -s -- -b bp_account [-a api] [-c config.ini]
 ```
 
 #### TODO: compare hash data in `producerhash` table
